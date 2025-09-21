@@ -131,7 +131,18 @@ class MultiHeadAttention(nn.Module):
             Tensor: Output tensor of shape (batch_size, seq_len, d_model).
         """
         # TODO: Implement the forward pass for the multi-head attention layer, now with masking.
-        x = None
+        d_model = hidden_state.shape[-1]
+        num_attention_heads = len(self.heads)
+
+        if d_model % num_attention_heads != 0:
+            raise RuntimeError("d_model not divisible by heads")
+        
+        outputs = [head(hidden_state, mask) for head in self.heads]
+        concatenated_outputs = torch.concat(
+            outputs, dim=-1
+        )  # CONCATENO LA ULTIMA DIMENSION PORQUE ES DONDE ESTAN TODOS LOS RESULTADOS DE LAS ATTENTION HEAD
+        x = self.output_linear(concatenated_outputs)
+
         return x
 
 class FeedForward(nn.Module):
