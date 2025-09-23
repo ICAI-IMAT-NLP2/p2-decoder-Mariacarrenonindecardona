@@ -225,7 +225,7 @@ class TransformerDecoderLayer(nn.Module):
 
         # Apply layer normalization and then apply multi-head attention
         hidden_state = self.layer_norm_1(x)
-        attention_out, _ = self.self_attention(hidden_state, mask)
+        attention_out = self.self_attention(hidden_state, mask)
         x = x + attention_out
 
         # Apply layer normalization and then apply feed-forward network
